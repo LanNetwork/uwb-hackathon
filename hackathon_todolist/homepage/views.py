@@ -5,3 +5,4 @@ from django.http import HttpResponse
 
 def showList(request):
     return HttpResponse("Hello UWB hackathon!")
+
