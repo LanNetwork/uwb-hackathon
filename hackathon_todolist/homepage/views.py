@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import generic
-from .models import User, Task
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import Task
 import os
 
 absolute_path = os.path.dirname(__file__)
@@ -12,8 +13,12 @@ def showList(request):
     tasks = Task.objects.all()
     return HttpResponse(tasks)
 
-class TaskListView(generic.ListView):
+class TaskListView(LoginRequiredMixin, generic.ListView):
     model = Task
     context_object_name = 'task_list'
-    queryset = Task.objects.all()
     template_name = full_path
+
+    def get_queryset(self):
+        return (
+            Task.objects.filter(userOwner=self.request.user)
+        )
